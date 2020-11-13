@@ -7,23 +7,24 @@ class ArticlesController < ApplicationController
         if params[:search]
             articles = articles.select{ |article| article.search(params[:search]) }
         end
-        render json: articles.to_json, status: :ok    
+        render json: { status: "Success", message: "Created", data: articles }, status: :ok    
     end
 
 
     def show
         if @article
-            render json: @article.to_json, status: :ok    
+            render json: { status: "Success", message: "Created", data: @article }, status: :ok    
         else
-            render json: { status: "Error", message: "ActiveRecord::RecordNotFound"}, status: :not_found
+            render json: { status: "Error", message: "ActiveRecord::RecordNotFound", data: nil}, status: :not_found
         end
     end
 
-    def create 
-        if new_article = Article.create!(article_params)
+    def create
+        new_article = Article.new(article_params)
+        if new_article.save
             render json: { status: "Success", message: "Created", data: new_article }, status: :created
         else
-            render json: { status: "Error", message: "ActiveRecord::RecordInvalid", data: new_article.errors.full_message }, status: :unprocessable_entity
+            render json: { status: "Error", message: "ActiveRecord::RecordInvalid", data: new_article.errors }, status: :unprocessable_entity
         end
     end
     
@@ -31,7 +32,7 @@ class ArticlesController < ApplicationController
         if @article && @article.update(article_params)
             render json: { status: "Success", message: "updated", data: @article }, status: :no_content
         else
-            render json: { status: "Error", message: "ActiveRecord::RecordNotFound", data: @article.errors.full_message }, status: :not_found
+            render json: { status: "Error", message: "ActiveRecord::RecordNotFound", data: @article.errors }, status: :not_found
         end
     end
 
@@ -40,7 +41,7 @@ class ArticlesController < ApplicationController
         if @article && @article.destroy
             render json: { status: "Success", message: "Deleted", data: @article }, status: :no_content
         else
-            render json: { status: "Error", message: "ActiveRecord::RecordNotFound", data: @article.errors.full_message}, status: :not_found
+            render json: { status: "Error", message: "ActiveRecord::RecordNotFound", data: nil}, status: :not_found
         end
     end
 
