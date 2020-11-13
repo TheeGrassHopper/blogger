@@ -6,25 +6,7 @@ application up and running.
 Things you may want to cover:
 Using Postman to hit endpoints
 
-GET /articles
-GET /articles?search=foo
-  should filter article to only those containing string 'foo'
-GET /articles/:id
-POST /articles
-  it should validate presence of title and body
-  it should validate that title is at least 10 characters long
-PUT /articles
-  same as POST
-DELETE /articles/:id
-
-GET /comments
-GET /comments?article_id=1
-  should filter comments by specific article
-GET /comments/:id
-POST /comments
-  it should validate presence of necceary attributes
-PUT /comments
-DELETE /comments/:id
+Get Started:
 
 - `git clone https://github.com/TheeGrassHopper/blogger.git`
 - `bundle install`
@@ -33,3 +15,25 @@ DELETE /comments/:id
 - `rails db:seed`
 - `rspec`
 - `rails s`
+
+### Avaiable Endpoints
+
+ - `GET /articles`
+- ` GET /articles?search=foo`
+  should filter article to only those containing string 'foo'
+- ` GET /articles/:id`
+- ` POST /articles`
+  it should validate presence of title and body
+  it should validate that title is at least 10 characters long
+- ` PUT /articles`
+  same as POST
+- ` DELETE /articles/:id`
+
+- ` GET /comments`
+- ` GET /comments?article_id=1`
+  should filter comments by specific article
+- ` GET /comments/:id`
+- ` POST /comments`
+  it should validate presence of necceary attributes
+- ` PUT /comments`
+- ` DELETE /comments/:id`
