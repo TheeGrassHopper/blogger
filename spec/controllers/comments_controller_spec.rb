@@ -12,30 +12,12 @@ describe CommentsController, type: :controller do
 
     describe "GET #index" do
         before do
-            get :index
+            get :index, params: { page: 1 }
         end
-        context "all comments" do
+        context "return all comments" do
 
             it "returns all comments paginated limit 10" do
-            coments_count = comments.count > 10 ? 10 : comments.count
-            expect(JSON.parse(response.body).size).to eq(coments_count)
-            end
-
-            context "when paginated" do
-            it "limits comments to 10" do
-                expect(JSON.parse(response.body).size).to eq(10)
-            end
-
-            it "passing page param" do
-                get :index, params: { page: 1 }
-                page_one = JSON.parse(response.body)
-                expect(JSON.parse(response.body).size).to eq(10)
-
-                get :index, params: { page: 2 }
-                page_two = JSON.parse(response.body)
-                expect(JSON.parse(response.body).size).to eq(10)
-                expect(page_one).to_not eq(page_two)
-            end
+                expect(JSON.parse(response.body).count).to eq(10)
             end
         end
 
@@ -46,7 +28,7 @@ describe CommentsController, type: :controller do
                 it "comments for article" do
                     get :index, params: { article_id: article_id }
                 
-                    expect(JSON.parse(response.body).size).to eq(article.comments.count)
+                    expect(JSON.parse(response.body).count).to eq(article.comments.count)
                 end
             end
 
