@@ -7,27 +7,27 @@ class CommentsController < ApplicationController
         if params[:article_id]
             comments = article.comments
         end
-        render json: comments.to_json, status: :ok
+        render json: { status: "Success", data: comments }, status: :ok
     end
 
     def show
-        render json: @comment.to_json, status: :ok
+        render json: { status: "Success", data: @comment }, status: :ok
     end
     
     def create
         comment = Comment.new(comment_params)
         if @article && comment.save
-            render json: comment.to_json, status: :created
+            render json: { status: "Success", data: comment }, status: :created
         else
-            render json: comment.errors, status: :unprocessable_entity
+            render json: { status: "Error", data: comment.errors }, status: :unprocessable_entity
         end
     end
 
     def update
         if @comment && @comment.update(comment_params)
-            render json: @comment.as_json, status: :no_content
+            render json: { status: "Success", data: @comment }, status: :no_content
         else
-            render json: @comment.errors, status: :unprocessable_entity
+            render json: { status: "Error", data: @comment.errors }, status: :unprocessable_entity
         end
     rescue ActiveRecord::RecordNotFound
         render json: { error: error.message }, status: :not_found
@@ -35,9 +35,9 @@ class CommentsController < ApplicationController
     
     def destroy
         if @comment && @comment.destroy
-            render json: @comment.to_json, status: :no_content
+            render json: { status: "Success", data: @comment }, status: :no_content
         else
-            render json: @comment.errors, status: :unprocessable_entity
+            render json: { status: "Error", data: @comment.errors }, status: :unprocessable_entity
         end
     end
     

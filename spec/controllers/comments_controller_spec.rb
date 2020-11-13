@@ -17,7 +17,7 @@ describe CommentsController, type: :controller do
         context "return all comments" do
 
             it "returns all comments paginated limit 10" do
-                expect(JSON.parse(response.body).count).to eq(10)
+                expect(JSON.parse(response.body)["data"].count).to eq(10)
             end
         end
 
@@ -28,7 +28,7 @@ describe CommentsController, type: :controller do
                 it "comments for article" do
                     get :index, params: { article_id: article_id }
                 
-                    expect(JSON.parse(response.body).count).to eq(article.comments.count)
+                    expect(JSON.parse(response.body)["data"].count).to eq(article.comments.count)
                 end
             end
 
@@ -51,7 +51,7 @@ describe CommentsController, type: :controller do
             it "returns a comment" do
               get :show, params: { id: comment_id }
               expect(response.status).to eq 200
-              expect(JSON.parse(response.body).to_json).to eq(comment.to_json)
+              expect(JSON.parse(response.body)["data"].to_json).to eq(comment.to_json)
             end
           end
       
@@ -87,14 +87,14 @@ describe CommentsController, type: :controller do
 
         context "with valid params" do
             it "succeeds" do
-                expect(JSON.parse(response.body)["body"]).to eq(body)
-                expect(JSON.parse(response.body)["commenter"]).to eq(commenter)
+                expect(JSON.parse(response.body)["data"]["body"]).to eq(body)
+                expect(JSON.parse(response.body)["data"]["commenter"]).to eq(commenter)
                 expect(response.status).to eq(201)
             end
         end
     
         context 'missing parameters' do
-            %i[body commenter].each do |key|
+            [:body, :commenter].each do |key|
                 let(:params) { { comment: create_params.except(key) } }
                 it 'returns an error' do
                     expect(response).to have_http_status(422)
@@ -105,14 +105,20 @@ describe CommentsController, type: :controller do
 
     describe 'PUT #update' do
         let(:comment_id) { articles.first.comments.first.id }
+        let(:body) { "Updated body" }
+        before do 
+            put :update, params: { id: comment_id, comment: { body: body } }
+        end
 
-        context "with valid params" do
-            before do 
-                put :update, params: { id: comment_id, comment: { body: "Updated body" } }
+        context "with valid params" do 
+            it "Success" do
+                expect(JSON.parse(response.body)["data"]["body"]).to eq(body)
             end
-    
-            it "succeeds" do
-                expect(JSON.parse(response.body)["body"]).to eq("Updated body")
+        end
+        context "with invalid params" do
+            let(:body) { nil }
+            it "Erros" do
+                expect(JSON.parse(response.body)["data"]["body"]).to eq(["can't be blank"])
             end
         end
     end
